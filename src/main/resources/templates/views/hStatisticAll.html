@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link th:href="@{/style/home.css}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistic</title>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        window.onload = function () {
+           var  value= document.getElementById("chartData").value;
+            const obj = JSON.parse(value);
+          console.log(obj)
+        var nimadur=[
+            { label: "apple",  y: 10  },
+            { label: "orange", y: 15  },
+            { label: "banana", y: 25  },
+            { label: "mango",  y: 30  },
+            { label: "grape",  y: 2  }
+        ];
+
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                title:{
+                    text: "Statistika All"
+                },
+                data: [
+                    {
+                        // Change type to "doughnut", "line", "splineArea", etc.
+                        type: "column",
+                        dataPoints: obj
+                    }
+                ]
+            });
+            chart.render();
+        }
+
+
+    </script>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="section">
+        <div class="top_navbar">
+            <div class="hamburger">
+                <a href="#">
+                    <i class="fas fa-bars"></i>
+                </a>
+            </div>
+            <div class="logout">
+                <a th:href="@{/logOut}">
+                    <i class="fa fa-sign-out">Sign out</i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Asosiy code qism -->
+        <div   style="display:none;">
+            <input  id="chartData" th:value="${chartData}" type="text">
+        </div>
+        <div id="chartContainer"  style="height: 500px; width: 80%; "></div>
+        <!-- Asosiy code qism tugashi  -->
+
+
+    </div>
+    <div class="sidebar" >
+        <div class="profile">
+            <div th:if="${user.getAvatar()!=null}">
+                <img  th:src="'/user/avatar/'+${user.getAvatar().getId()}"   alt="profile_picture">
+            </div>
+            <h3>
+                <small th:text="${user.getFirstName() +' ' + user.getLastName()}"></small>
+            </h3>
+            <h4 >
+                <small th:text="${user.getRole().getName().name()}"></small>
+            </h4>
+        </div>
+        <ul>
+            <li>
+                <a href="/statistic" class="active">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <span class="item">Statistic</span>
+                </a>
+            </li>
+            <li>
+                <a  th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}" href="/statistic/all">
+                    <span class="icon"><i class="fas fa-tachometer-alt"></i></span>
+                    <span class="item">Statistic All</span>
+                </a>
+            </li>
+            <li>
+                <a href="/document/personal">
+                    <span class="icon"><i class="fas fa-desktop"></i></span>
+                    <span class="item">My Dashboard</span>
+                </a>
+                <a href="/document" th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}">
+                    <span class="icon"><i class="fas fa-desktop"></i></span>
+                    <span class="item">ALL Dashboard</span>
+                </a>
+            </li>
+            <li th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}">
+                <a href="/user/table">
+                    <span class="icon"><i class="fas fa-user-friends"></i></span>
+                    <span class="item">People</span>
+                </a>
+            </li>
+            <li th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}">
+                <a href="/user/add">
+                    <span class="icon"><i class="fas fa-user"></i></span>
+                    <span class="item">People Add</span>
+                </a>
+            </li>
+<!--            <li>-->
+<!--                <a href="#">-->
+<!--                    <span class="icon"><i class="fas fa-tachometer-alt"></i></span>-->
+<!--                    <span class="item">Perfomance</span>-->
+<!--                </a>-->
+<!--            </li>-->
+            <li>
+                <a href="/document/create" th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span class="item">Add Document</span>
+                </a>
+            </li>
+<!--            <li>-->
+<!--                <a href="#">-->
+<!--                    <span class="icon"><i class="fas fa-chart-line"></i></span>-->
+<!--                    <span class="item">Reports</span>-->
+<!--                </a>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                <a href="#" th:if="${user.getRole().getName().name()=='ADMIN'}">-->
+<!--                    <span class="icon"><i class="fas fa-user-shield"></i></span>-->
+<!--                    <span class="item">Admin</span>-->
+<!--                </a>-->
+<!--            </li>-->
+            <li>
+                <a href="/user/setting">
+                    <span class="icon"><i class="fas fa-cog"></i></span>
+                    <span class="item">Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+<script>
+    var hamburger = document.querySelector(".hamburger");
+    hamburger.addEventListener("click", function(){
+        document.querySelector("body").classList.toggle("active");
+    })
+</script>
+</body>
+</html>

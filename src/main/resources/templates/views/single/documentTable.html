@@ -1,0 +1,93 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Table 09</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/style/documentTable.css}">
+
+</head>
+<body>
+<section class="ftco-section">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-md-12" >
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr class="topline">
+                            <th>T/r</th>
+                            <th>Tasnifi</th>
+                            <th>Dan...Gacha</th>
+                            <th>Ichirochilar</th>
+                            <th>Holati</th>
+                            <th>Turi</th>
+                            <th>Hujjatlar</th>
+                            <th th:if="${user.getRole().getName()!='USER'}">Operation</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="doc:${documents}">
+                            <td scope="row" th:text="${doc.getOrderNumber()}"></td>
+                            <td >
+                                <a style="font-size: 14px" class="text-info" th:text="${doc.getDescription()}"></a>
+                            </td>
+                            <td >
+                                <h6 style="color: darkblue;font-size: 16px" th:text="${doc.getStartDate()}"></h6>
+                                <h6 style="color: red;font-size: 16px" th:text="${doc.getEndDate()}"></h6>
+                            </td>
+
+                            <td >
+                                <div th:each="user:${doc.getUsers()}">
+
+                                    <label style="color: green;font-size: 14px" th:text="${user.getFirstName()+'  '+user.getLastName()}"></label>
+                                </div>
+                            </td>
+
+                            <td >
+                                <a th:if="${doc.getStatus().name()=='BAJARILGAN'}"  class="btn btn-success ">BAJARILGAN</a>
+                                <a th:if="${doc.getStatus().name()=='BAJARILMAGAN'}"  class="btn btn-danger ">BAJARILMAGAN</a>
+                                <a th:if="${doc.getStatus().name()=='JARAYONDA'}"  class="btn btn-primary ">JARAYONDA</a>
+                            </td>
+                            <td>
+                                <a th:if="${doc.getLocal()}" class="btn btn-success ">Local</a>
+                                <a th:unless="${doc.getLocal()}" class="btn btn-danger ">MVD</a>
+                            </td>
+                            <td >
+                                <div th:each="d:${doc.getFiles()}" >
+                                    <a th:href="'/document/view/'+${d.id}"  th:text="${d.getOriginalName()}"></a>
+                                </div>
+                            </td>
+                            <td th:if="${user.getRole().getName()!='USER'}">
+                                <a th:if="${user.getRole().getName()!='USER'}" th:href="'/document/edite/'+${doc.id}" class="btn btn-info">EDITE</a>
+                                <a th:if="${user.getRole().getName()!='USER'} " th:href="'/document/done/'+${doc.id}" class="btn btn-success">DONE</a>
+                                <a th:if="${doc.getStatus().name().contains('BAJARILGAN')}" th:href="'/document/delete/'+${doc.id}" class="btn btn-danger">DELETE</a>
+
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="counter"  >
+
+                        <a th:each="i:${#numbers.sequence(1,count)}" th:href="'/document/?page='+${i}"  th:style="${page==i} ?  'color: red' : '' " th:text="${i+'  '}"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>
+

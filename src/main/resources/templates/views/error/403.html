@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>403</title>
+    <link th:href="@{/style/s403.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="container">
+    <div class="component PC"></div>
+    <div class="component connection">
+        <div class="dot first"></div>
+        <div class="dot second"></div>
+        <div class="dot third"></div>
+    </div>
+    <div class="component server">
+        <div class="slot"></div>
+        <div class="slot"></div>
+        <div class="button"></div>
+        <div class="button"></div>
+    </div>
+    <button class="redirect " href="/" onclick="connect()">go back to main site</button>
+</div>
+<script th:src="@{/js/403.js}"></script>
+</body>
+</html>

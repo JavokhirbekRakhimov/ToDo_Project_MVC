@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link th:href="@{/style/home.css}" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document table</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" th:href="@{/style/documentTable.css}">
+
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="section">
+        <div class="top_navbar">
+            <div class="hamburger">
+                <a href="#">
+                    <i class="fas fa-bars"></i>
+                </a>
+            </div>
+            <div class="logout">
+                <a th:href="@{/logOut}">
+                    <i class="fa fa-sign-out">Sign out</i>
+                </a>
+            </div>
+        </div>
+
+
+        <!--        Asosiy qism boshlandi -->
+
+        <section class="ftco-section">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-wrap">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr class="topline">
+                                    <th>T/r</th>
+                                    <th>Tasnifi</th>
+                                    <th>Dan...Gacha</th>
+                                    <th>Ichirochilar</th>
+                                    <th>Holati</th>
+                                    <th>Turi</th>
+                                    <th>Hujjatlar</th>
+                                    <th th:if="${user.getRole().getName()!='USER'}">Operation</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="doc:${documents}">
+                                    <td scope="row" th:text="${doc.getOrderNumber()}"></td>
+                                    <td>
+                                        <a style="font-size: 14px" class="text-info"
+                                           th:text="${doc.getDescription()}"></a>
+                                    </td>
+                                    <td>
+                                        <h6 style="color: darkblue;font-size: 16px"
+                                            th:text="${doc.getStartDate()}"></h6>
+                                        <h6 style="color: red;font-size: 16px" th:text="${doc.getEndDate()}"></h6>
+                                    </td>
+
+                                    <td>
+                                        <div th:each="user:${doc.getUsers()}">
+
+                                            <label style="color: green;font-size: 14px"
+                                                   th:text="${user.getFirstName()+'  '+user.getLastName()}"></label>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <a th:if="${doc.getStatus().name()=='BAJARILGAN'}" class="btn btn-success ">BAJARILGAN</a>
+                                        <a th:if="${doc.getStatus().name()=='BAJARILMAGAN'}" class="btn btn-danger ">BAJARILMAGAN</a>
+                                        <a th:if="${doc.getStatus().name()=='JARAYONDA'}" class="btn btn-primary ">JARAYONDA</a>
+                                        <a th:if="${doc.getStatus().name().contains('KECH')}"  class="btn btn-success">KECHIKTIRIB_BAJARILGAN</a>
+                                    </td>
+                                    <td>
+                                        <a th:if="${doc.getLocal()}" class="btn btn-success ">Local</a>
+                                        <a th:unless="${doc.getLocal()}" class="btn btn-danger ">MVD</a>
+                                    </td>
+                                    <td>
+                                        <div th:each="d:${doc.getFiles()}">
+                                            <a th:href="'/document/view/'+${d.id}" th:text="${d.getOriginalName()} " target="_blank"></a>
+                                        </div>
+                                    </td>
+                                    <td th:if="${user.getRole().getName().name()!='USER'}">
+                                        <a th:if="${user.getRole().getName().name()!='USER'}"
+                                           th:href="'/document/edite/'+${doc.id}" class="btn btn-info">EDITE</a>
+                                        <a th:if="${user.getRole().getName()!='USER' and !doc.getStatus().name().contains('BAJARILGAN')} "
+                                           th:href="'/document/done/'+${doc.id}" class="btn btn-success">DONE</a>
+                                        <a th:if="${ user.getRole().getName().name().equals('BOSS') and doc.getStatus().name().contains('BAJARILGAN') }"
+                                           th:href="'/document/delete/'+${doc.id}" class="btn btn-danger">DELETE</a>
+
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                            <div class="counter">
+
+                                <a th:each="i:${#numbers.sequence(1,count)}" th:href="'/document/?page='+${i}"
+                                   th:style="${page==i} ?  'color: red' : '' " th:text="${i+'  '}"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+    <div class="sidebar">
+        <div class="profile">
+            <div th:if="${user.getAvatar()!=null}">
+                <img th:src="'/user/avatar/'+${user.getAvatar().getId()}" alt="profile_picture">
+            </div>
+            <h3>
+                <small th:text="${user.getFirstName() +' ' + user.getLastName()}"></small>
+            </h3>
+            <h4>
+                <small th:text="${user.getRole().getName().name()}"></small>
+            </h4>
+        </div>
+        <ul>
+            <li>
+                <a href="/statistic" class="active">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <span class="item">Statistic</span>
+                </a>
+            </li>
+            <li>
+                <a  th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}" href="/statistic/all">
+                    <span class="icon"><i class="fas fa-tachometer-alt"></i></span>
+                    <span class="item">Statistic All</span>
+                </a>
+            </li>
+            <li>
+                <a href="/document/personal">
+                    <span class="icon"><i class="fas fa-desktop"></i></span>
+                    <span class="item">My Dashboard</span>
+                </a>
+                <a href="/document"
+                   th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}">
+                    <span class="icon"><i class="fas fa-desktop"></i></span>
+                    <span class="item">ALL Dashboard</span>
+                </a>
+            </li>
+            <li th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}">
+                <a href="/user/table">
+                    <span class="icon"><i class="fas fa-user-friends"></i></span>
+                    <span class="item">People</span>
+                </a>
+            </li>
+            <li th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}">
+                <a href="/user/add">
+                    <span class="icon"><i class="fas fa-user"></i></span>
+                    <span class="item">People Add</span>
+                </a>
+            </li>
+            <!--            <li>-->
+            <!--                <a href="#">-->
+            <!--                    <span class="icon"><i class="fas fa-tachometer-alt"></i></span>-->
+            <!--                    <span class="item">Perfomance</span>-->
+            <!--                </a>-->
+            <!--            </li>-->
+            <li>
+                <a href="/document/create"
+                   th:if="${user.getRole().getName().name()=='ADMIN' || user.getRole().getName().name()=='BOSS'}">
+                    <span class="icon"><i class="fas fa-database"></i></span>
+                    <span class="item">Add Document</span>
+                </a>
+            </li>
+            <!--            <li>-->
+            <!--                <a href="#">-->
+            <!--                    <span class="icon"><i class="fas fa-chart-line"></i></span>-->
+            <!--                    <span class="item">Reports</span>-->
+            <!--                </a>-->
+            <!--            </li>-->
+            <!--            <li>-->
+            <!--                <a href="#" th:if="${user.getRole().getName().name()=='ADMIN'}">-->
+            <!--                    <span class="icon"><i class="fas fa-user-shield"></i></span>-->
+            <!--                    <span class="item">Admin</span>-->
+            <!--                </a>-->
+            <!--            </li>-->
+            <li>
+                <a href="/user/setting">
+                    <span class="icon"><i class="fas fa-cog"></i></span>
+                    <span class="item">Settings</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+<script>
+    var hamburger = document.querySelector(".hamburger");
+    hamburger.addEventListener("click", function () {
+        document.querySelector("body").classList.toggle("active");
+    })
+</script>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/popper.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>
