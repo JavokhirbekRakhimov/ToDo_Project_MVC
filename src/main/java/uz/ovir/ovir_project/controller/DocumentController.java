@@ -112,7 +112,7 @@ public class DocumentController {
         }
     }
     @PostMapping(path = "/create")
-    @CheckRole({RoleEnum.USER,RoleEnum.BOSS,RoleEnum.ADMIN})
+    @CheckRole(  {RoleEnum.USER,RoleEnum.BOSS,RoleEnum.ADMIN})
     public String documentCreate(Model model, @ModelAttribute(name = "document") DocumentDtoCreat documentDtoCreat, MultipartFile[] files){
         ResponseDto<Document>responseDto=documentService.createDocument(documentDtoCreat,files);
         List<UserDtoDocument>list=userService.getActiveUsersList();

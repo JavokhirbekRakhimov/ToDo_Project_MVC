@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  app:
+    container_name: springnative
+    image: springnative
+    build: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - pg
+  pg:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=crudDB

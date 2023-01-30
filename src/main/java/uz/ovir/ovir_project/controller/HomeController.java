@@ -79,7 +79,7 @@ public class HomeController {
 
     }
     @GetMapping("/logOut")
-    @CheckRole({RoleEnum.USER,RoleEnum.BOSS,RoleEnum.ADMIN})    
+    @CheckRole({RoleEnum.USER,RoleEnum.BOSS,RoleEnum.ADMIN})
     public String getCookie(HttpServletRequest request, HttpServletResponse response) {
 
         Cookie[] cookies = request.getCookies();
